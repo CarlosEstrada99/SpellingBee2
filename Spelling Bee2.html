@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spelling Bee Practice</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #e3f2fd;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+
+        button {
+            background-color: #0288d1;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0277bd;
+        }
+
+        input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spelling Bee Practice</h1>
+        <button id="playWord">Escuchar palabra</button>
+        <button id="repeatWord">Repetir palabra</button>
+        <button id="spellWord">Deletrear palabra</button>
+        <button id="repeatSpell">Repetir deletreo</button>
+        <button id="slowWord">Escuchar más lento</button>
+        <button id="fastWord">Escuchar más rápido</button>
+        <p id="hint"></p>
+        <input type="text" id="wordInput" placeholder="Escribe la palabra">
+        <button id="checkWord">Comprobar</button>
+        <p id="result"></p>
+        <p>Correctas: <span id="correctCount">0</span> | Incorrectas: <span id="incorrectCount">0</span></p>
+    </div>
+    <script>
+        const words = [
+    "loud", "they", "where", "man", "house", "boy", "when", "plan", "there", "about", "ant", "fat", "this", "our", "add", "flat", "town", "that", "bank", "flag",
+    "there", "brown", "task", "scab", "them", "then", "wax", "cap", "joy", "down", "sand", "camp", "out", "clud", "sang", "shall", "last", "gone", "travel", "And",
+    "box", "worm", "basket", "it's", "doll", "log", "wagon", "good", "pond", "brought", "compass", "for", "cloth", "grandpa", "worship", "you", "job", "grandma", "bud", "that's",
+    "frog", "woman", "under", "bug", "clot", "human", "great", "until", "spot", "cabin", "hate", "tear", "scale", "tame", "equity", "be", "bump", "the", "air", "best",
+    "wear", "rule", "snake", "yet", "cut", "for", "hair", "nul", "care", "repair"
+];
+
+        let currentWord = "";
+        let lastWord = "";
+
+        function speakWord(word, rate = 1) {
+            let utterance = new SpeechSynthesisUtterance(word);
+            utterance.rate = rate;
+            speechSynthesis.speak(utterance);
+        }
+
+        function spellWord(word, rate = 1) {
+            let letters = word.split("").join(" ");
+            let utterance = new SpeechSynthesisUtterance(letters);
+            utterance.rate = rate;
+            speechSynthesis.speak(utterance);
+        }
+
+        document.getElementById("playWord").addEventListener("click", function() {
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            lastWord = currentWord;
+            speakWord(currentWord);
+        });
+
+        document.getElementById("repeatWord").addEventListener("click", function() {
+            if (lastWord) {
+                speakWord(lastWord);
+            }
+        });
+
+        document.getElementById("spellWord").addEventListener("click", function() {
+            if (currentWord) {
+                spellWord(currentWord);
+            }
+        });
+
+        document.getElementById("repeatSpell").addEventListener("click", function() {
+            if (lastWord) {
+                spellWord(lastWord);
+            }
+        });
+
+        document.getElementById("slowWord").addEventListener("click", function() {
+            if (lastWord) {
+                speakWord(lastWord, 0.6);
+            }
+        });
+
+        document.getElementById("fastWord").addEventListener("click", function() {
+            if (lastWord) {
+                speakWord(lastWord, 1.5);
+            }
+        });
+
+        document.getElementById("checkWord").addEventListener("click", function() {
+            let userInput = document.getElementById("wordInput").value.trim().toLowerCase();
+            let result = document.getElementById("result");
+            let correctCount = document.getElementById("correctCount");
+            let incorrectCount = document.getElementById("incorrectCount");
+            
+            if (userInput === currentWord) {
+                result.textContent = "¡Correcto!";
+                result.style.color = "green";
+                correctCount.textContent = parseInt(correctCount.textContent) + 1;
+            } else {
+                result.textContent = "Incorrecto, intenta de nuevo.";
+                result.style.color = "red";
+                incorrectCount.textContent = parseInt(incorrectCount.textContent) + 1;
+            }
+
+            document.getElementById("wordInput").value = "";
+        });
+    </script>
+</body>
+</html>
